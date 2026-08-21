@@ -1,267 +1,32 @@
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * The content below * * * * * * * * * * * -->
-<!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * -->
-<!-- * * * * * * * * * * and can be replaced.  * * * * * * * * * * -->
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * Delete the template below * * * * * * * * * -->
-<!-- * * * * * * * to get started with your project! * * * * * * * -->
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<main class="admin-shell">
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-mark">B</span><div><strong>BuddyDrop</strong><small>Operations desk</small></div></div>
+    <nav>
+      <a class="nav-item active" href="#overview"><span>01</span>Overview</a>
+      <a class="nav-item" href="#catalogue"><span>02</span>Catalogue</a>
+      <a class="nav-item" href="#users"><span>03</span>Customers</a>
+    </nav>
+    <div class="sidebar-footer"><span class="status-dot"></span><div><strong>{{ backendStatus() }}</strong><small>{{ backendDetails() }}</small></div></div>
+  </aside>
 
-<style>
-  :host {
-    --bright-blue: oklch(51.01% 0.274 263.83);
-    --electric-violet: oklch(53.18% 0.28 296.97);
-    --french-violet: oklch(47.66% 0.246 305.88);
-    --vivid-pink: oklch(69.02% 0.277 332.77);
-    --hot-red: oklch(61.42% 0.238 15.34);
-    --orange-red: oklch(63.32% 0.24 31.68);
-
-    --gray-900: oklch(19.37% 0.006 300.98);
-    --gray-700: oklch(36.98% 0.014 302.71);
-    --gray-400: oklch(70.9% 0.015 304.04);
-
-    --red-to-pink-to-purple-vertical-gradient: linear-gradient(
-      180deg,
-      var(--orange-red) 0%,
-      var(--vivid-pink) 50%,
-      var(--electric-violet) 100%
-    );
-
-    --red-to-pink-to-purple-horizontal-gradient: linear-gradient(
-      90deg,
-      var(--orange-red) 0%,
-      var(--vivid-pink) 50%,
-      var(--electric-violet) 100%
-    );
-
-    --pill-accent: var(--bright-blue);
-
-    font-family:
-      'Inter',
-      -apple-system,
-      BlinkMacSystemFont,
-      'Segoe UI',
-      Roboto,
-      Helvetica,
-      Arial,
-      sans-serif,
-      'Apple Color Emoji',
-      'Segoe UI Emoji',
-      'Segoe UI Symbol';
-    box-sizing: border-box;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    display: block;
-    height: 100dvh;
-  }
-
-  h1 {
-    font-size: 3.125rem;
-    color: var(--gray-900);
-    font-weight: 500;
-    line-height: 100%;
-    letter-spacing: -0.125rem;
-    margin: 0;
-    font-family:
-      'Inter Tight',
-      -apple-system,
-      BlinkMacSystemFont,
-      'Segoe UI',
-      Roboto,
-      Helvetica,
-      Arial,
-      sans-serif,
-      'Apple Color Emoji',
-      'Segoe UI Emoji',
-      'Segoe UI Symbol';
-  }
-
-  p {
-    margin: 0;
-    color: var(--gray-700);
-  }
-
-  main {
-    width: 100%;
-    min-height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 1rem;
-    box-sizing: inherit;
-    position: relative;
-  }
-
-  .angular-logo {
-    max-width: 9.2rem;
-  }
-
-  .content {
-    display: flex;
-    justify-content: space-around;
-    width: 100%;
-    max-width: 700px;
-    margin-bottom: 3rem;
-  }
-
-  .content h1 {
-    margin-top: 1.75rem;
-  }
-
-  .content p {
-    margin-top: 1.5rem;
-  }
-
-  .divider {
-    width: 1px;
-    background: var(--red-to-pink-to-purple-vertical-gradient);
-    margin-inline: 0.5rem;
-  }
-
-  .pill-group {
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    flex-wrap: wrap;
-    gap: 1.25rem;
-  }
-
-  .pill {
-    display: flex;
-    align-items: center;
-    --pill-accent: var(--bright-blue);
-    background: color-mix(in srgb, var(--pill-accent) 5%, transparent);
-    color: var(--pill-accent);
-    padding-inline: 0.75rem;
-    padding-block: 0.375rem;
-    border-radius: 2.75rem;
-    border: 0;
-    transition: background 0.3s ease;
-    font-family: var(--inter-font);
-    font-size: 0.875rem;
-    font-style: normal;
-    font-weight: 500;
-    line-height: 1.4rem;
-    letter-spacing: -0.00875rem;
-    text-decoration: none;
-    white-space: nowrap;
-  }
-
-  .pill:hover {
-    background: color-mix(in srgb, var(--pill-accent) 15%, transparent);
-  }
-
-  .pill-group .pill:nth-child(6n + 1) {
-    --pill-accent: var(--bright-blue);
-  }
-  .pill-group .pill:nth-child(6n + 2) {
-    --pill-accent: var(--electric-violet);
-  }
-  .pill-group .pill:nth-child(6n + 3) {
-    --pill-accent: var(--french-violet);
-  }
-
-  .pill-group .pill:nth-child(6n + 4),
-  .pill-group .pill:nth-child(6n + 5),
-  .pill-group .pill:nth-child(6n + 6) {
-    --pill-accent: var(--hot-red);
-  }
-
-  .pill-group svg {
-    margin-inline-start: 0.25rem;
-  }
-
-  .social-links {
-    display: flex;
-    align-items: center;
-    gap: 0.73rem;
-    margin-top: 1.5rem;
-  }
-
-  .social-links path {
-    transition: fill 0.3s ease;
-    fill: var(--gray-400);
-  }
-
-  .social-links a:hover svg path {
-    fill: var(--gray-900);
-  }
-
-  @media screen and (max-width: 650px) {
-    .content {
-      flex-direction: column;
-      width: max-content;
-    }
-
-    .divider {
-      height: 1px;
-      width: 100%;
-      background: var(--red-to-pink-to-purple-horizontal-gradient);
-      margin-block: 1.5rem;
-    }
-  }
-
-  .container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 0 1rem;
-  }
-
-  .card {
-    background: white;
-    border-radius: 0.5rem;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 2rem;
-    text-align: center;
-    width: 100%;
-    max-width: 400px;
-  }
-
-  .badge {
-    background: var(--bright-blue);
-    border-radius: 1rem;
-    color: white;
-    font-size: 0.875rem;
-    padding: 0.5rem 1rem;
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-  }
-
-  .status {
-    background: #f9f9f9;
-    border-radius: 0.375rem;
-    padding: 1rem;
-    margin-top: 1.5rem;
-    text-align: left;
-  }
-</style>
-
-<main class="container">
-  <section class="card">
-    <div class="badge">BuddyDrop</div>
-    <h1>Hello, {{ title() }}</h1>
-    <p>Angular frontend connected to the Java Spring Boot backend.</p>
-    <p>Use this as the starting point for your app's API integration.</p>
-
-    <div class="status">
-      <strong>Status:</strong> {{ backendStatus() }}
-      <br />
-      <span>{{ backendDetails() }}</span>
-      <br />
-      <span>{{ adminStatus() }}</span>
+  <section class="workspace">
+    <header class="topbar"><div><p class="kicker">Friday · 21 August 2026</p><h1>Good morning, operator.</h1></div><div class="operator"><span class="avatar">AD</span><div><strong>Admin desk</strong><small>Platform manager</small></div></div></header>
+    <div class="content" id="overview">
+      <div class="intro-row"><div><p class="kicker accent">Live overview</p><h2>Keep the drop moving.</h2></div><span class="live-pill"><i></i> System live</span></div>
+      <section class="metric-grid"><article class="metric metric-dark"><span>Catalogue items</span><strong>{{ products().length }}</strong><small>Available services</small></article><article class="metric"><span>Customers</span><strong>{{ users().length }}</strong><small>Registered accounts</small></article><article class="metric metric-coral"><span>API heartbeat</span><strong>{{ backendStatus() === 'Connected' ? 'OK' : '!' }}</strong><small>{{ backendStatus() }}</small></article></section>
+      @if (notice()) { <p class="notice">{{ notice() }}</p> }
+      <section class="work-grid">
+        <article class="panel" id="catalogue"><div class="panel-heading"><div><p class="kicker">Service catalogue</p><h3>Products</h3></div><span class="count">{{ products().length }} total</span></div><div class="table-head"><span>Service</span><span>Category</span><span>Price</span></div>
+          @for (product of products(); track product.id) { <div class="table-row"><div class="service-name"><span class="service-icon">{{ product.name.charAt(0) }}</span><strong>{{ product.name }}</strong></div><span>{{ product.category }}</span><strong>${{ product.price.toFixed(2) }}</strong></div> } @empty { <p class="empty">No catalogue items returned by the API.</p> }
+        </article>
+        <article class="panel form-panel"><div class="panel-heading"><div><p class="kicker">Quick action</p><h3>Add a service</h3></div></div><label>Service name<input [ngModel]="productName()" (ngModelChange)="productName.set($event)" placeholder="Express delivery" /></label><label>Category<input [ngModel]="productCategory()" (ngModelChange)="productCategory.set($event)" placeholder="Courier" /></label><label>Price<input type="number" min="0" [ngModel]="productPrice()" (ngModelChange)="productPrice.set($event)" placeholder="24.00" /></label><button class="button" type="button" (click)="createProduct()">Add to catalogue <span>→</span></button></article>
+      </section>
+      <section class="work-grid lower-grid" id="users">
+        <article class="panel"><div class="panel-heading"><div><p class="kicker">Customer directory</p><h3>Recent accounts</h3></div><span class="count">{{ users().length }} total</span></div>
+          @for (user of users().slice(0, 5); track user.id) { <div class="user-row"><span class="user-avatar">{{ user.username.charAt(0).toUpperCase() }}</span><div><strong>{{ user.username }}</strong><small>{{ user.email }}</small></div><span class="verified">Active</span></div> } @empty { <p class="empty">No customers returned by the API.</p> }
+        </article>
+        <article class="panel form-panel"><div class="panel-heading"><div><p class="kicker">Quick action</p><h3>Invite customer</h3></div></div><label>Username<input [ngModel]="userName()" (ngModelChange)="userName.set($event)" placeholder="olivia.morgan" /></label><label>Email address<input type="email" [ngModel]="userEmail()" (ngModelChange)="userEmail.set($event)" placeholder="olivia@example.com" /></label><button class="button" type="button" (click)="createUser()">Create account <span>→</span></button></article>
+      </section>
     </div>
   </section>
 </main>
-
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * The content above * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * * -->
-<!-- * * * * * * * * * * and can be replaced.  * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * End of Placeholder  * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-
-<router-outlet />
