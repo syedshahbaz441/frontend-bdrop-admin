@@ -2,9 +2,9 @@
   <aside class="sidebar">
     <div class="brand"><span class="brand-mark">B</span><div><strong>BuddyDrop</strong><small>Operations desk</small></div></div>
     <nav>
-      <a class="nav-item active" href="#overview"><span>01</span>Overview</a>
-      <a class="nav-item" href="#catalogue"><span>02</span>Catalogue</a>
-      <a class="nav-item" href="#users"><span>03</span>Customers</a>
+      <button class="nav-item" [class.active]="activeView() === 'overview'" type="button" (click)="showView('overview')"><span>01</span>Overview</button>
+      <button class="nav-item" [class.active]="activeView() === 'catalogue'" type="button" (click)="showView('catalogue')"><span>02</span>Catalogue</button>
+      <button class="nav-item" [class.active]="activeView() === 'users'" type="button" (click)="showView('users')"><span>03</span>Customers</button>
     </nav>
     <div class="sidebar-footer"><span class="status-dot"></span><div><strong>{{ backendStatus() }}</strong><small>{{ backendDetails() }}</small></div></div>
   </aside>
@@ -13,20 +13,26 @@
     <header class="topbar"><div><p class="kicker">Friday · 21 August 2026</p><h1>Good morning, operator.</h1></div><div class="operator"><span class="avatar">AD</span><div><strong>Admin desk</strong><small>Platform manager</small></div></div></header>
     <div class="content" id="overview">
       <div class="intro-row"><div><p class="kicker accent">Live overview</p><h2>Keep the drop moving.</h2></div><span class="live-pill"><i></i> System live</span></div>
-      <section class="metric-grid"><article class="metric metric-dark"><span>Catalogue items</span><strong>{{ products().length }}</strong><small>Available services</small></article><article class="metric"><span>Customers</span><strong>{{ users().length }}</strong><small>Registered accounts</small></article><article class="metric metric-coral"><span>API heartbeat</span><strong>{{ backendStatus() === 'Connected' ? 'OK' : '!' }}</strong><small>{{ backendStatus() }}</small></article></section>
+      @if (activeView() === 'overview') {
+        <section class="metric-grid"><article class="metric metric-dark"><span>Catalogue items</span><strong>{{ products().length }}</strong><small>Available services</small></article><article class="metric"><span>Customers</span><strong>{{ users().length }}</strong><small>Registered accounts</small></article><article class="metric metric-coral"><span>API heartbeat</span><strong>{{ backendStatus() === 'Connected' ? 'OK' : '!' }}</strong><small>{{ backendStatus() }}</small></article></section>
+      }
       @if (notice()) { <p class="notice">{{ notice() }}</p> }
-      <section class="work-grid">
+      @if (activeView() !== 'users') {
+      <section class="work-grid" [class.catalogue-view]="activeView() === 'catalogue'">
         <article class="panel" id="catalogue"><div class="panel-heading"><div><p class="kicker">Service catalogue</p><h3>Products</h3></div><span class="count">{{ products().length }} total</span></div><div class="table-head"><span>Service</span><span>Category</span><span>Price</span></div>
           @for (product of products(); track product.id) { <div class="table-row"><div class="service-name"><span class="service-icon">{{ product.name.charAt(0) }}</span><strong>{{ product.name }}</strong></div><span>{{ product.category }}</span><strong>${{ product.price.toFixed(2) }}</strong></div> } @empty { <p class="empty">No catalogue items returned by the API.</p> }
         </article>
         <article class="panel form-panel"><div class="panel-heading"><div><p class="kicker">Quick action</p><h3>Add a service</h3></div></div><label>Service name<input [ngModel]="productName()" (ngModelChange)="productName.set($event)" placeholder="Express delivery" /></label><label>Category<input [ngModel]="productCategory()" (ngModelChange)="productCategory.set($event)" placeholder="Courier" /></label><label>Price<input type="number" min="0" [ngModel]="productPrice()" (ngModelChange)="productPrice.set($event)" placeholder="24.00" /></label><button class="button" type="button" (click)="createProduct()">Add to catalogue <span>→</span></button></article>
       </section>
-      <section class="work-grid lower-grid" id="users">
+      }
+      @if (activeView() !== 'catalogue') {
+      <section class="work-grid lower-grid" [class.users-view]="activeView() === 'users'">
         <article class="panel"><div class="panel-heading"><div><p class="kicker">Customer directory</p><h3>Recent accounts</h3></div><span class="count">{{ users().length }} total</span></div>
-          @for (user of users().slice(0, 5); track user.id) { <div class="user-row"><span class="user-avatar">{{ user.username.charAt(0).toUpperCase() }}</span><div><strong>{{ user.username }}</strong><small>{{ user.email }}</small></div><span class="verified">Active</span></div> } @empty { <p class="empty">No customers returned by the API.</p> }
+          @for (user of users().slice(0, activeView() === 'users' ? users().length : 5); track user.id) { <div class="user-row"><span class="user-avatar">{{ user.username.charAt(0).toUpperCase() }}</span><div><strong>{{ user.username }}</strong><small>{{ user.email }}</small></div><span class="verified">Active</span></div> } @empty { <p class="empty">No customers returned by the API.</p> }
         </article>
         <article class="panel form-panel"><div class="panel-heading"><div><p class="kicker">Quick action</p><h3>Invite customer</h3></div></div><label>Username<input [ngModel]="userName()" (ngModelChange)="userName.set($event)" placeholder="olivia.morgan" /></label><label>Email address<input type="email" [ngModel]="userEmail()" (ngModelChange)="userEmail.set($event)" placeholder="olivia@example.com" /></label><button class="button" type="button" (click)="createUser()">Create account <span>→</span></button></article>
       </section>
+      }
     </div>
   </section>
 </main>

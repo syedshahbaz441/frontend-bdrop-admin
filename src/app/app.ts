@@ -12,6 +12,7 @@ import { HealthService } from './services/health.service';
   styleUrl: './app.css',
 })
 export class App {
+  protected readonly activeView = signal<'overview' | 'catalogue' | 'users'>('overview');
   protected readonly backendStatus = signal('Checking connection');
   protected readonly backendDetails = signal('Waiting for Spring Boot');
   protected readonly products = signal<AdminProduct[]>([]);
@@ -88,5 +89,9 @@ export class App {
       },
       error: () => this.notice.set('User could not be created.'),
     });
+  }
+
+  protected showView(view: 'overview' | 'catalogue' | 'users'): void {
+    this.activeView.set(view);
   }
 }
