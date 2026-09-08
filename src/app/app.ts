@@ -23,12 +23,29 @@ export class App {
   protected readonly userName = signal('');
   protected readonly userEmail = signal('');
   protected readonly notice = signal('');
+  protected readonly isLoggedIn = signal(false);
+  protected readonly currentUser = signal<{ username: string; role: 'admin' | 'manager' | 'viewer' }>({ username: '', role: 'viewer' });
+  protected readonly usernameInput = signal('admin');
+  protected readonly passwordInput = signal('admin123');
 
   private readonly healthService = inject(HealthService);
   private readonly adminProductService = inject(AdminProductService);
   private readonly adminUserService = inject(AdminUserService);
 
+  private readonly credentials: Record<string, { password: string; role: 'admin' | 'manager' | 'viewer' }> = {
+    admin: { password: 'admin123', role: 'admin' },
+    manager: { password: 'manager123', role: 'manager' },
+    viewer: { password: 'viewer123', role: 'viewer' },
+  };
+
   constructor() {
+    const storedUser = localStorage.getItem('buddydrop-admin-user');
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser) as { username: string; role: 'admin' | 'manager' | 'viewer' };
+      this.currentUser.set(parsedUser);
+      this.isLoggedIn.set(true);
+    }
+
     this.healthService.getHealth().subscribe({
       next: (response) => {
         this.backendStatus.set('Connected');
@@ -40,6 +57,44 @@ export class App {
       },
     });
 
+    if (this.isLoggedIn()) {
+      this.loadAdminData();
+    }
+  }
+
+  protected login(): void {
+    const username = this.usernameInput().trim();
+    const password = this.passwordInput();
+    const match = this.credentials[username];
+
+    if (!match || match.password !== password) {
+      this.notice.set('Invalid credentials. Try admin/admin123 or manager/manager123.');
+      return;
+    }
+
+    const user = { username, role: match.role };
+    this.currentUser.set(user);
+    this.isLoggedIn.set(true);
+    localStorage.setItem('buddydrop-admin-user', JSON.stringify(user));
+    this.notice.set('');
+    this.loadAdminData();
+  }
+
+  protected logout(): void {
+    this.isLoggedIn.set(false);
+    this.currentUser.set({ username: '', role: 'viewer' });
+    localStorage.removeItem('buddydrop-admin-user');
+    this.notice.set('');
+  }
+
+  protected canAccess(view: 'overview' | 'catalogue' | 'users'): boolean {
+    const role = this.currentUser().role;
+    if (role === 'admin') return true;
+    if (role === 'manager') return view !== 'users';
+    return view === 'overview';
+  }
+
+  private loadAdminData(): void {
     this.adminProductService.getProducts().subscribe({
       next: (products) => this.products.set(products),
       error: () => this.notice.set('Products could not be loaded.'),
