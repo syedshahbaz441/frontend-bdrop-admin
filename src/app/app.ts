@@ -65,19 +65,46 @@ export class App {
   protected login(): void {
     const username = this.usernameInput().trim();
     const password = this.passwordInput();
-    const match = this.credentials[username];
 
-    if (!match || match.password !== password) {
-      this.notice.set('Invalid credentials. Try admin/admin123 or manager/manager123.');
-      return;
-    }
+    void this.authenticateAdmin(username, password);
+  }
 
-    const user = { username, role: match.role };
-    this.currentUser.set(user);
-    this.isLoggedIn.set(true);
-    localStorage.setItem('buddydrop-admin-user', JSON.stringify(user));
+  private async authenticateAdmin(username: string, password: string): Promise<void> {
     this.notice.set('');
-    this.loadAdminData();
+
+    try {
+      const response = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Invalid admin credentials');
+      }
+
+      const payload = (await response.json()) as { token: string; role: 'admin' | 'manager' | 'viewer'; username: string; name: string };
+      const user = { username: payload.username || username, role: payload.role || 'viewer' };
+
+      this.currentUser.set(user);
+      this.isLoggedIn.set(true);
+      localStorage.setItem('buddydrop-admin-user', JSON.stringify(user));
+      this.loadAdminData();
+      return;
+    } catch {
+      const fallback = this.credentials[username];
+      if (fallback && fallback.password === password) {
+        const fallbackUser = { username, role: fallback.role };
+        this.currentUser.set(fallbackUser);
+        this.isLoggedIn.set(true);
+        localStorage.setItem('buddydrop-admin-user', JSON.stringify(fallbackUser));
+        this.loadAdminData();
+        return;
+      }
+
+      this.notice.set('Invalid credentials. Try admin/admin123 or manager/manager123.');
+      this.isLoggedIn.set(false);
+    }
   }
 
   protected logout(): void {
